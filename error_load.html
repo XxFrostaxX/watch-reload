@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasai.RIP</title>
+    <style>
+        /* Grundlegende Stile */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: white;
+            position: relative;
+        }
+
+        /* Canvas für den Hintergrund */
+        #backgroundCanvas {
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Container für den Warte-Text */
+        #waitingText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 2em;
+            color: rgba(255, 0, 0, 0.8);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            animation: pulsieren 0.9s infinite;
+            z-index: 1;
+        }
+
+
+        @keyframes pulsieren {
+            0%{
+                opacity: 1; /* Volle Deckkraft am Anfang und Ende */
+            }
+            75% {
+                opacity: 0; /* Halbe Deckkraft in der Mitte */
+            }
+        }
+
+        /* Container für die Inhalte */
+        #content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            z-index: 1;
+            
+        }
+
+
+
+        a {
+            color: red;
+        }
+        /* Überschrift */
+        .hage {
+            margin-bottom: 20px;
+            color: rgba(255, 0, 0, 0.8);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Stil der Links als Buttons */
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            border: 2px solid rgba(255, 0, 0, 0.8);
+            border-radius: 10px;
+            background: rgba(255, 0, 0, 0.2);
+            color: red;
+            text-decoration: none;
+            font-size: 1.2em;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+
+        /* Glänzender Effekt bei Hover */
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg) translate(-100%, -100%);
+            transition: transform 0.5s;
+        }
+
+        .btn:hover::before {
+            transform: rotate(45deg) translate(100%, 100%);
+        }
+
+        .btn:hover {
+            background: rgba(255, 0, 0, 0.4);
+            
+            transform: scale(1.05);
+        }
+    </style>
+    
+</head>
+<body>
+    <!-- Canvas für den Hintergrund -->
+    <canvas id="backgroundCanvas"></canvas>
+    <!-- Warte-Text -->
+    <div id="waitingText">
+
+        <h6>Warten auf Server...</h6>
+    </div>
+
+    <!-- Inhalte, die nach 5 Sekunden angezeigt werden -->
+    <div id="content">
+
+        <h1 class="hage">WatchReloaded</h1>
+        <div class="hage">
+            <h2>Die seiten laden nicht ?</h2>
+            <p>Hole dir 'EGYPT VPN' aus dem Playstore oder jeden anderen VPN-Client</p>
+            <h2><a href="index.html">Zurück zur Hauptseite</a></h2>
+        </div>
+        <h5 class="hage">Powered by <a href="#">Kasai.RIP</a></h5>
+    </div>
+
+    <script>
+        // Funktion zum Anzeigen der Inhalte nach 5 Sekunden und Entfernen des Warte-Texts
+        setTimeout(() => {
+            document.getElementById('waitingText').style.display = 'none'; // Warte-Text ausblenden
+            document.getElementById('content').style.opacity = 1; // Inhalt anzeigen
+        }, 500);
+
+        // Hintergrund-Animation
+        const canvas = document.getElementById('backgroundCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Canvas-Größe anpassen
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Punkt-Klasse
+        class Point {
+            constructor(x, y, vx, vy) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.radius = 3;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Randkollision
+                if (this.x <= 0 || this.x >= canvas.width) this.vx *= -1;
+                if (this.y <= 0 || this.y >= canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.fill();
+            }
+        }
+
+        // Punkte initialisieren
+        const points = [];
+        const numPoints = 60;
+
+        for (let i = 0; i < numPoints; i++) {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const vx = (Math.random() - 0.5) * 2;
+            const vy = (Math.random() - 0.5) * 2;
+            points.push(new Point(x, y, vx, vy));
+        }
+
+        // Animationsschleife
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Punkte aktualisieren und zeichnen
+            points.forEach(point => {
+                point.update();
+                point.draw();
+            });
+
+            // Linien zwischen nahe beieinander liegenden Punkten zeichnen
+            for (let i = 0; i < points.length; i++) {
+                for (let j = i + 1; j < points.length; j++) {
+                    const dx = points[i].x - points[j].x;
+                    const dy = points[i].y - points[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) { // Abstandsschwelle
+                        ctx.beginPath();
+                        ctx.moveTo(points[i].x, points[i].y);
+                        ctx.lineTo(points[j].x, points[j].y);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / 100})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
