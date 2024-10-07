@@ -31,8 +31,12 @@
             font-size: 2em;
             color: rgba(255, 0, 0, 0.8);
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-            animation: pulsieren 0.9s infinite;
+
             z-index: 1;
+        }
+
+        .woserver {
+            animation: pulsieren 0.9s infinite;
         }
 
         @keyframes pulsieren {
@@ -112,7 +116,9 @@
 <body>
     <canvas id="backgroundCanvas"></canvas>
     <div id="waitingText">
-        <h6>Warten auf Server...</h6>
+        <img style="width: 300px; border-radius: 5%;" src="halloween.gif" alt="halloween">
+        <h6 class="woserver">Warten auf Server...</h6>
+        
     </div>
 
     <div id="content">
