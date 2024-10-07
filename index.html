@@ -5,27 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasai.RIP</title>
     <style>
-        /* Grundlegende Stile */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
-            overflow: hidden;
             font-family: Arial, sans-serif;
             background-color: #000;
             color: white;
             position: relative;
         }
 
-        /* Canvas für den Hintergrund */
         #backgroundCanvas {
             top: 0;
             left: 0;
             z-index: -1;
         }
 
-        /* Container für den Warte-Text */
         #waitingText {
             position: absolute;
             top: 50%;
@@ -39,17 +35,15 @@
             z-index: 1;
         }
 
-
         @keyframes pulsieren {
-            0%{
-                opacity: 1; /* Volle Deckkraft am Anfang und Ende */
+            0% {
+                opacity: 1; 
             }
             75% {
-                opacity: 0; /* Halbe Deckkraft in der Mitte */
+                opacity: 0; 
             }
         }
 
-        /* Container für die Inhalte */
         #content {
             position: absolute;
             top: 50%;
@@ -59,22 +53,18 @@
             opacity: 0;
             transition: opacity 1s ease-in-out;
             z-index: 1;
-            
         }
-
-
 
         a {
             color: red;
         }
-        /* Überschrift */
+
         .hage {
             margin-bottom: 20px;
             color: rgba(255, 0, 0, 0.8);
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }
 
-        /* Stil der Links als Buttons */
         .btn {
             display: inline-block;
             margin: 10px;
@@ -88,10 +78,9 @@
             position: relative;
             overflow: hidden;
             transition: background 0.3s, transform 0.3s;
-            cursor: pointer;
+            cursor: not-allowed;
         }
 
-        /* Glänzender Effekt bei Hover */
         .btn::before {
             content: '';
             position: absolute;
@@ -110,46 +99,48 @@
 
         .btn:hover {
             background: rgba(255, 0, 0, 0.4);
-            
             transform: scale(1.05);
         }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
-    
 </head>
 <body>
-    <!-- Canvas für den Hintergrund -->
     <canvas id="backgroundCanvas"></canvas>
-    <!-- Warte-Text -->
     <div id="waitingText">
-
         <h6>Warten auf Server...</h6>
     </div>
 
-    <!-- Inhalte, die nach 5 Sekunden angezeigt werden -->
     <div id="content">
-
         <h1 class="hage">WatchReloaded</h1>
         <h3>Wichtig: Pop-ups werden weiterhin erscheinen, jedoch nicht mehr so häufig, und sie werden nichts öffnen.</h3>
-        <a href="https://aniworld.to/" class="btn">AniWorld</a>
-        <a href="https://serienstream.to/" class="btn">SerienStream</a>
-        <a href="https://filmpalast.to/" class="btn">Filmpalast</a>
-        <a href="https://kinoger.com/" class="btn">KinoGer</a>
-        <a href="error_load.html" class="btn">Seiten laden nicht ?</a>
+        <a href="https://aniworld.to/" class="btn disabled">AniWorld</a>
+        <a href="https://serienstream.to/" class="btn disabled">SerienStream</a>
+        <a href="https://filmpalast.to/" class="btn disabled">Filmpalast</a>
+        <a href="https://kinoger.com/" class="btn disabled">KinoGer</a>
+        <a href="error_load.html" class="btn disabled">Seiten laden nicht?</a>
         <h5 class="hage">Powered by <a href="#">Kasai.RIP</a></h5>
     </div>
 
     <script>
-        // Funktion zum Anzeigen der Inhalte nach 5 Sekunden und Entfernen des Warte-Texts
         setTimeout(() => {
-            document.getElementById('waitingText').style.display = 'none'; // Warte-Text ausblenden
-            document.getElementById('content').style.opacity = 1; // Inhalt anzeigen
+            document.getElementById('waitingText').style.display = 'none';
+            document.getElementById('content').style.opacity = 1;
+
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('disabled');
+                btn.style.cursor = 'pointer'; 
+            });
         }, 2000);
 
-        // Hintergrund-Animation
         const canvas = document.getElementById('backgroundCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Canvas-Größe anpassen
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -157,7 +148,6 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Punkt-Klasse
         class Point {
             constructor(x, y, vx, vy) {
                 this.x = x;
@@ -170,8 +160,6 @@
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-
-                // Randkollision
                 if (this.x <= 0 || this.x >= canvas.width) this.vx *= -1;
                 if (this.y <= 0 || this.y >= canvas.height) this.vy *= -1;
             }
@@ -184,7 +172,6 @@
             }
         }
 
-        // Punkte initialisieren
         const points = [];
         const numPoints = 60;
 
@@ -196,24 +183,21 @@
             points.push(new Point(x, y, vx, vy));
         }
 
-        // Animationsschleife
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Punkte aktualisieren und zeichnen
             points.forEach(point => {
                 point.update();
                 point.draw();
             });
 
-            // Linien zwischen nahe beieinander liegenden Punkten zeichnen
             for (let i = 0; i < points.length; i++) {
                 for (let j = i + 1; j < points.length; j++) {
                     const dx = points[i].x - points[j].x;
                     const dy = points[i].y - points[j].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
 
-                    if (distance < 100) { // Abstandsschwelle
+                    if (distance < 100) {
                         ctx.beginPath();
                         ctx.moveTo(points[i].x, points[i].y);
                         ctx.lineTo(points[j].x, points[j].y);
