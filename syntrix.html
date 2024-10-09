@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WatchReloaded - Download</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .video-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1024px) {
+            .video-container {
+                max-width: 600px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            video {
+                width: 90vw;
+            }
+            .video-container {
+                max-width: none;
+            }
+        }
+
+        #backgroundCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(18, 18, 18, 0.85);
+        }
+
+        #content {
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            z-index: 1;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 600;
+            color: #e50914;
+            text-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+        }
+
+        p {
+            font-size: 1.1em;
+            color: #ccc;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 20px;
+            padding: 15px 30px;
+            border: 2px solid #e50914;
+            border-radius: 30px;
+            background: rgba(229, 9, 20, 0.2);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: background 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: rgba(229, 9, 20, 0.4);
+            transform: scale(1.05);
+        }
+
+        h6 {
+            margin-top: 10px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .tutorial {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .tutorial h2 {
+            color: #e50914;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .tutorial-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .tutorial-step img {
+            width: 250px;
+            height: auto;
+            border: 2px solid #e50914;
+            border-radius: 15px;
+            margin-right: 20px;
+            box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .tutorial-step img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(229, 9, 20, 0.5);
+        }
+
+        .tutorial-step p {
+            flex: 1;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .tutorial-step {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tutorial-step img {
+                margin-right: 0;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="backgroundCanvas"></canvas>
+    <div id="content">
+        <h1>WatchReloaded</h1>
+        <div class="video-container">
+            <video src="video_Advertisement.mp4" autoplay muted loop></video>
+        </div>
+        <p>Erhalte die WatchReloaded App fÃ¼r Android und streame deine Lieblingsinhalte jederzeit.</p>
+        <a href="WatchReloaded.apk" class="btn">Download fÃ¼r Android</a>
+        <h6>Aktuelle Version 1.0.0</h6>
+        <div class="tutorial">
+            <h2>Installationsanleitung:</h2>
+
+            <div class="tutorial-step">
+                <img src="tutorial/1.jpg" alt="Schritt 1: App herunterladen">
+                <p>Besuche den Download-Link und lade die WatchReloaded APK-Datei auf dein Android-GerÃ¤t herunter.</p>
+            </div>
+
+            <div class="tutorial-step">
+                <img src="tutorial/2.jpg" alt="Schritt 2: Installation erlauben">
+                <p>BestÃ¤tige den Download, wenn du dazu aufgefordert wirst!</p>
+            </div>
+
+            <div class="tutorial-step">
+                <img src="tutorial/3.jpg" alt="Schritt 3: App installieren">
+                <p>Erlaube die Installation aus unbekannten Quellen in den Einstellungen deines GerÃ¤ts.</p>
+            </div>
+
+            <div class="tutorial-step">
+                <img src="tutorial/4.jpg" alt="Schritt 4: App starten">
+                <img src="tutorial/5.jpg" alt="Schritt 4: App starten">
+                <p>Ã–ffne die heruntergeladene APK-Datei und folge den Installationsanweisungen.</p>
+                <p>Nach der Installation findest du die WatchReloaded App in deinem App-MenÃ¼. Starte die App und genieÃŸe das Streaming!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById('content').style.opacity = 1;
+        }, 1000);
+
+        const canvas = document.getElementById('backgroundCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Point {
+            constructor(x, y, vx, vy) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.radius = 3;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x <= 0 || this.x >= canvas.width) this.vx *= -1;
+                if (this.y <= 0 || this.y >= canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#e50914';
+                ctx.fill();
+            }
+        }
+
+        const points = [];
+        const numPoints = 60;
+
+        for (let i = 0; i < numPoints; i++) {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const vx = (Math.random() - 0.5) * 2;
+            const vy = (Math.random() - 0.5) * 2;
+            points.push(new Point(x, y, vx, vy));
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(18, 18, 18, 0.85)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            points.forEach(point => {
+                point.update();
+                point.draw();
+            });
+
+            for (let i = 0; i < points.length; i++) {
+                for (let j = i + 1; j < points.length; j++) {
+                    const dx = points[i].x - points[j].x;
+                    const dy = points[i].y - points[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(points[i].x, points[i].y);
+                        ctx.lineTo(points[j].x, points[j].y);
+                        ctx.strokeStyle = `rgba(229, 9, 20, ${1 - distance / 100})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
